@@ -18,7 +18,7 @@
 <body>
 
     <header>
-        <nav class="navbar navbar-light bg-light">
+        <nav class="navbar navbar-light bg-light p-4">
             <a class="navbar-brand" href="#">My Weather Center</a>
           </nav>
     </header>
@@ -26,43 +26,53 @@
     <div class="container">
         <main class="row">
 
-            <h1 class="col-12">A Forecast for all the Places You Need</h1>
+            <h1 class="col-12 text-center m-3">Customize Your Forecast</h1>
 
-            <section class="col-md-3" id="city-search">
+            <div class="col-md-4">
+                <section class="card m-4" id="city-search">
+                    <img class="card-img-top" src="assets/images/clouds.jpg" alt="Clouds and blue sky">
 
-                <h2>Search for a City Here</h2>
+                    <div class="card-body">
+                        <h4 class="card-title">Add Your City Here</h4>
 
-                <form>
-                    <label for="cityFormInput">Enter city here. </label>
-                    <input type="text" class="form-control" id="cityFormInput" placeholder="e.g. SanFransisco, Timbuktu, etc. ">
+                        <form>
+                            <label for="cityFormInput">Lookup a city to add. </label>
+                            <input type="text" class="form-control" id="cityFormInput" placeholder="e.g. SanFransisco, Timbuktu, etc. ">
+                            <button class="btn btn-primary mt-4">Submit</button>
+                        </form>
+                    </div>
+                </section>
+
+                <section class="p-2 m-4" id="city-display">
+                    <h2>Your Selected Cities</h2>
                     <button class="btn btn-primary">Submit</button>
-                </form>
+                </section>
+            </div>
 
-        
-
-            </section>
-
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <div class=row>
-                    <section class="col-12" id="current-forecast">
+                    <section class="col-12 m-4" id="current-forecast">
                         <h2>Current Weather</h2>
                     </section>
 
-                    <section  class="col-12" id="five-day-forecast">
+                    <section  class="col-12 m-4" id="five-day-forecast">
                         <h2>5-day Forecast</h2>
                     </section>
                 </div>
             </div>
         </main>
+    </div>
 
-        <footer class="col-12">
-            <p>
-                Made with ❤️ and Javascript. 
-              </p>
-              <p>
-                Return to <a href= "https://github.com/LaurenDarrimon">Lauren's GitHub. </a>
-              </p>
-
+    <div class="container-fluid">
+        <footer class="row">
+            <div class="col-12  text-center p-4">
+                <p>
+                    Made with ❤️ and Javascript. 
+                </p>
+                <p>
+                    Return to <a href= "https://github.com/LaurenDarrimon">Lauren's GitHub. </a>
+                </p>
+            </div>
         </footer>
     </div>
 

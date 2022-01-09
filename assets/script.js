@@ -26,8 +26,6 @@ function citySearch(event){
     });
 }
 
-
-
 function getLatLon(response) {
     console.log("add city to list");
 
@@ -37,15 +35,13 @@ function getLatLon(response) {
 
     cityStateName = response[0].name + ", " + response[0].state
 
-    console.log(currentCityLat);
-    console.log(currentCityLon);
     console.log(cityStateName);
 
-    displayCityButtons(cityStateName, currentCityLat, currentCityLon);
+    displayCityButtons(cityStateName);
 
-    getCurrentConditions(currentCityLat, currentCityLon);
+    getCurrentConditions(cityStateName);
 
-    get5DayForecast(currentCityLat, currentCityLon);
+    get5DayForecast(cityStateName);
 }
 
 function displayCityButtons(cityStateName) {
@@ -62,24 +58,58 @@ function displayCityButtons(cityStateName) {
     //call up functions to change the weather displays
 }
 
-//FUNCTION to change weather display
-function changeWeatherCity(){
-    console.log("change city weather")
+//FUNCTION to change weather display pull lat lon from data attribute or from local storage
+function changeWeatherCity(event){
+    
+    console.log("CLICK");
+    console.log(event);
+
+    cityStateName = event.target.innerText
+
+    console.log(cityStateName);
+
+    getCurrentConditions(cityStateName);
+    get5DayForecast(cityStateName);
+
 }
 
 
 //FUNCTION to get current conditions
-function getCurrentConditions(currentCityLat, currentCityLon){
-    console.log(currentCityLat);
-    console.log(currentCityLon);
+function getCurrentConditions(cityStateName){
+
+    let currentWeatherURL =  "https://api.openweathermap.org/data/2.5/weather?q=" + cityStateName + "&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
+
+    //get data for current weather
+    $.ajax({
+     url: currentWeatherURL,
+     method: 'GET',
+ }).then(function (response) {
+
+    console.log("Current weather");
+    console.log(response);
+ });
+  
+
 }
 
 //FUNCTION to display current conditions
 
+
 //FUNCTION to get 5-day forecast 
-function get5DayForecast(currentCityLat, currentCityLon){
-    console.log(currentCityLat);
-    console.log(currentCityLon);
+function get5DayForecast(cityStateName){
+
+   let string5DayURL =  "https://api.openweathermap.org/data/2.5/forecast?q=" + cityStateName + "&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
+
+       //get data for 5 day weather forecast
+       $.ajax({
+        url: string5DayURL,
+        method: 'GET',
+    }).then(function (response) {
+        console.log("5day forecast");
+        console.log(response);
+
+    });
+   
 }
 
 //FUNCTION to display 5-day forecast 
@@ -90,4 +120,5 @@ function get5DayForecast(currentCityLat, currentCityLon){
 $searchButton.on("click", citySearch);
 
 //add event listener to anything with class city button 
-//that takes in info about the button clicked and passes it to the weather dispaly functiions
+$(document).on("click", ".city-button", changeWeatherCity);
+

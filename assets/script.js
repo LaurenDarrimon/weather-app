@@ -1,20 +1,15 @@
 let $searchButton = $("#search-button");
 
+let currentCityLat;
+let currentCityLon;
 
 function citySearch(event){
-    event.preventDefault(); 
+    event.preventDefault(); //prevent page refresh
 
-    //store the input text value in a variable. 
-    let cityNameInput = event.target.previousElementSibling.value;
-
-    console.log(cityNameInput);
+    let cityNameInput = event.target.previousElementSibling.value; //store the input text value in a variable. 
 
     //declare variable for concatenated URL string for API call
     let stringCityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityNameInput + "&limit=5&appid=4a13086fc80aa69cd7cfdea0eb325b6a"
-    
-    //(note for doing later - trim the string after a comma and make a new variable for the state & add modal to choose which city you meant, not needed for MVP)
-
-    let currentCityLatLon;
     
     //get lat & lon from geocoding api
     $.ajax({
@@ -23,20 +18,51 @@ function citySearch(event){
     }).then(function (response) {
         console.log(response);
 
-        currentCityLatLon = [response[0].lat, response[0].lon]
+        getLatLon(response) //pass city data object to function to store lat & Longitude. 
 
     });
+}
 
-    console.log(currentCityLatLon);
+function getLatLon(response) {
+    console.log("add city to list");
 
-    
-    addCityToList();
+    currentCityLat = response[0].lat, 
 
+    currentCityLon = response[0].lon;
+
+    cityStateName = response[0].name + ", " + response[0].state
+
+    console.log(currentCityLat);
+    console.log(currentCityLon);
+    console.log(cityStateName);
+
+    addCityToList(cityStateName);
+
+    getCurrentConditions(currentCityLat, currentCityLon);
+
+    get5DayForecast(currentCityLat, currentCityLon);
 }
 
 function addCityToList() {
-    console.log("add city to list");
+    console.log(cityStateName);
+    
 }
+
+//FUNCTION to get current conditions
+function getCurrentConditions(currentCityLat, currentCityLon){
+    console.log(currentCityLat);
+    console.log(currentCityLon);
+}
+
+//FUNCTION to display current conditions
+
+//FUNCTION to get 5-day forecast 
+function get5DayForecast(currentCityLat, currentCityLon){
+    console.log(currentCityLat);
+    console.log(currentCityLon);
+}
+
+//FUNCTION to display 5-day forecast 
 
 
 

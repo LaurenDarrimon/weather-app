@@ -1,5 +1,5 @@
 body {
-    background-image: url(images/umbrella-weather.jpg);
+    background-image: url(images/clouds.jpg);
     background-size: cover;
     background-position: center; 
 }
@@ -10,12 +10,11 @@ body {
 
 
 h1{
-    color:white;
     font-size: 35;
 }
 
 #city-display, #current-forecast, #five-day-forecast{
-    background-color: rgba(255,255,255,.85);
+    background-color: rgba(255,255,255,.5);
 }
 
 footer{

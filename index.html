@@ -30,7 +30,7 @@
 
             <div class="col-md-4">
                 <section class="card m-4" id="city-search">
-                    <img class="card-img-top" src="assets/images/clouds.jpg" alt="Clouds and blue sky">
+                    <img class="card-img-top" src="assets/images/umbrella-weather.jpg" alt="Clouds and blue sky">
 
                     <div class="card-body">
                         <h4 class="card-title">Add Your City Here</h4>
@@ -52,11 +52,23 @@
             <div class="col-md-8">
                 <div class=row>
                     <section class="col-12 m-4" id="current-forecast">
-                        <h2>Current Weather</h2>
+                        <h2>Current Conditions for: 
+                            <span id="current-conditions-city"></span> 
+                            <span id="current-date"></span>
+                            <span id="current-icon"></span>
+                        </h2>
+                        <p></p>
+                        <p></p>
+
                     </section>
 
                     <section  class="col-12 m-4" id="five-day-forecast">
                         <h2>5-day Forecast</h2>
+                        <div class="row">
+                            <div class="col-2">
+                                Day 1 
+                            </div>
+                        </div>
                     </section>
                 </div>
             </div>
@@ -85,6 +97,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
 
     <script src="assets/script.js"></script>
 

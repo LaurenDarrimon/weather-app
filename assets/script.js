@@ -1,21 +1,15 @@
-
 //DOM variables for city search panel
 let $searchButton = $("#search-button");
 let $cityDisplayArea = $("#city-display")
 
-//DOM variables for Current weather display
-let $currentConditionsCity = $("#current-conditions-city")
-let $currentDate = $("#current-date")
-let $currentIcon = $("#current-icon")
-
-
-let cityStateName; 
+let cityStateName;  //declare variables needed globally 
 let currentLat; 
 let currentLon; 
+let weatherDate;
 
-let currentWeatherInfo = {};
+let currentWeatherInfo = {}; //empty object we will fill with key value pairs of weather data
 
-let cities = [];
+let cities = []; //empty array that we'll fill with all the cities selected
 
 function citySearch(event){
     event.preventDefault(); //prevent page refresh
@@ -43,12 +37,12 @@ function getCityName(response) { // get the city name from the data response
     currentLat = response[0].lat
     currentLon = response[0].lon
 
-    displayCityButtons(cityStateName); //hand city name to display buttons
-    getCurrentConditions(currentLat, currentLon); //hand city name to the function for current conditions
-    get5DayForecast(cityStateName); //hand city name to fxn for 5-day forecast
+    displayCityButtons(); //call display buttons
+    getCurrentConditions(); //call function for current conditions
+    get5DayForecast(); // fxn for 5-day forecast
 }
 
-function displayCityButtons(cityStateName) {
+function displayCityButtons() {
 
     let newCityButton = $("<button>"); //create button element
 
@@ -69,25 +63,22 @@ function changeWeatherCity(event){
 
     console.log(cityStateName);
 
-    getCurrentConditions(cityStateName);
-    get5DayForecast(cityStateName);
+    getCurrentConditions();
+    get5DayForecast();
 }
 
 
 //FUNCTION to get current conditions from city name in API endpoint
-function getCurrentConditions(currentLat, currentLon){
+function getCurrentConditions(){
 
-   let currentWeatherURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + currentLat + "&lon=" + currentLon + "&exclude=minutely,hourly,daily,alerts&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
+   let currentWeatherURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + currentLat + "&lon=" + currentLon + "&units=imperial&exclude=minutely,hourly,daily,alerts&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
 
     $.ajax({     //get data for current weather
         url: currentWeatherURL,
         method: 'GET',
     }).then(function (response) {
-        console.log("Current weather ------- \n" );
-        console.log(response);
 
-        let weatherDate = moment(response.current.dt, "X").format("MMM Do YY");
-        console.log(weatherDate);
+        weatherDate = moment(response.current.dt, "X").format("MMM Do YY");
 
         currentWeatherInfo["city"] = cityStateName;   //fill up current weather info object with required data 
         currentWeatherInfo["date"] = weatherDate;
@@ -98,20 +89,33 @@ function getCurrentConditions(currentLat, currentLon){
         currentWeatherInfo["uv"] = response.current.uvi;
 
         //hand weather data object as argument to display function 
-        displayCurrentWeather(currentWeatherInfo)
+        displayCurrentWeather()
     });
 }
 
 //FUNCTION to display current conditions
 function displayCurrentWeather(){
-//make display visible .css
+
+console.log("display current weather function");
+console.log(currentWeatherInfo);
+
+$("#current-conditions-city").text(cityStateName);
+$("#current-date").text(weatherDate);
+
+$("#temp").text("Temperature: " + currentWeatherInfo["temp"] + "\xB0 F");
+$("#humidity").text("Humidity: " + currentWeatherInfo["humidity"] + "%");
+$("#wind").text("Wind Speed: " + currentWeatherInfo["wind"]) + "mph";
+$("#uv").text("UV Index: " + currentWeatherInfo["uv"]);
+
+// ICONS - do later 
+//$("#current-icon").attr??? = currentWeatherInfo["icon"]
 
 }
 
 
 
 //FUNCTION to get 5-day forecast from city name in API endpoint
-function get5DayForecast(cityStateName){
+function get5DayForecast(){
 
    let string5DayURL =  "https://api.openweathermap.org/data/2.5/forecast?q=" + cityStateName + "&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
 

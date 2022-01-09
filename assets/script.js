@@ -1,8 +1,6 @@
 let $searchButton = $("#search-button");
 let $cityDisplayArea = $("city-display")
 
-let currentCityLat;
-let currentCityLon;
 let cityStateName; 
 
 let cities = [];
@@ -22,20 +20,14 @@ function citySearch(event){
     }).then(function (response) {
         console.log(response);
 
-        getLatLon(response) //pass city data object to function to store lat & Longitude. 
+        getCityName(response) //pass city data object to the function to get the name of the city and the state
     });
 }
 
-function getLatLon(response) {
+function getCityName(response) {
     console.log("add city to list");
 
-    currentCityLat = response[0].lat, 
-
-    currentCityLon = response[0].lon;
-
     cityStateName = response[0].name + ", " + response[0].state
-
-    console.log(cityStateName);
 
     displayCityButtons(cityStateName);
 
@@ -45,7 +37,6 @@ function getLatLon(response) {
 }
 
 function displayCityButtons(cityStateName) {
-    console.log(cityStateName);
 
     let newCityButton = $("<button>"); //create button element
 
@@ -54,11 +45,9 @@ function displayCityButtons(cityStateName) {
     newCityButton.text(cityStateName);    //fill button element
 
    $("#city-display").append(newCityButton);    //append to city display
-
-    //call up functions to change the weather displays
 }
 
-//FUNCTION to change weather display pull lat lon from data attribute or from local storage
+//FUNCTION to initiate getting weather info for the city on the button that was clicked 
 function changeWeatherCity(event){
     
     console.log("CLICK");
@@ -70,7 +59,6 @@ function changeWeatherCity(event){
 
     getCurrentConditions(cityStateName);
     get5DayForecast(cityStateName);
-
 }
 
 
@@ -81,15 +69,12 @@ function getCurrentConditions(cityStateName){
 
     //get data for current weather
     $.ajax({
-     url: currentWeatherURL,
-     method: 'GET',
- }).then(function (response) {
-
-    console.log("Current weather");
-    console.log(response);
- });
-  
-
+        url: currentWeatherURL,
+        method: 'GET',
+    }).then(function (response) {
+        console.log("Current weather");
+        console.log(response);
+    });
 }
 
 //FUNCTION to display current conditions
@@ -107,7 +92,6 @@ function get5DayForecast(cityStateName){
     }).then(function (response) {
         console.log("5day forecast");
         console.log(response);
-
     });
    
 }

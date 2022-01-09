@@ -1,7 +1,11 @@
 let $searchButton = $("#search-button");
+let $cityDisplayArea = $("city-display")
 
 let currentCityLat;
 let currentCityLon;
+let cityStateName; 
+
+let cities = [];
 
 function citySearch(event){
     event.preventDefault(); //prevent page refresh
@@ -19,9 +23,10 @@ function citySearch(event){
         console.log(response);
 
         getLatLon(response) //pass city data object to function to store lat & Longitude. 
-
     });
 }
+
+
 
 function getLatLon(response) {
     console.log("add city to list");
@@ -36,17 +41,32 @@ function getLatLon(response) {
     console.log(currentCityLon);
     console.log(cityStateName);
 
-    addCityToList(cityStateName);
+    displayCityButtons(cityStateName, currentCityLat, currentCityLon);
 
     getCurrentConditions(currentCityLat, currentCityLon);
 
     get5DayForecast(currentCityLat, currentCityLon);
 }
 
-function addCityToList() {
+function displayCityButtons(cityStateName) {
     console.log(cityStateName);
-    
+
+    let newCityButton = $("<button>"); //create button element
+
+    newCityButton.addClass("btn btn-primary w-100 my-2 city-button")   //set button classes for bootstrap
+
+    newCityButton.text(cityStateName);    //fill button element
+
+   $("#city-display").append(newCityButton);    //append to city display
+
+    //call up functions to change the weather displays
 }
+
+//FUNCTION to change weather display
+function changeWeatherCity(){
+    console.log("change city weather")
+}
+
 
 //FUNCTION to get current conditions
 function getCurrentConditions(currentCityLat, currentCityLon){
@@ -68,3 +88,6 @@ function get5DayForecast(currentCityLat, currentCityLon){
 
 //when the city serch button clicks, then run a city search function. 
 $searchButton.on("click", citySearch);
+
+//add event listener to anything with class city button 
+//that takes in info about the button clicked and passes it to the weather dispaly functiions

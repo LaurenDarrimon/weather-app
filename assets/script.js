@@ -1,14 +1,14 @@
-//DOM variables for city search panel
-let $searchButton = $("#search-button");
+let $searchButton = $("#search-button"); //DOM variables for city search panel
 let $cityDisplayArea = $("#city-display")
 
 let cityStateName;  //declare variables needed globally 
 let currentLat; 
 let currentLon; 
 let weatherDate;
+let forecastDate;
 
 let currentWeatherInfo = {}; //empty object we will fill with key value pairs of weather data
-
+let fiveDayInfo = new Array(); //new empty array to fill with objects for the five day forecast data
 let cities = []; //empty array that we'll fill with all the cities selected
 
 function citySearch(event){
@@ -96,9 +96,6 @@ function getCurrentConditions(){
 //FUNCTION to display current conditions
 function displayCurrentWeather(){
 
-console.log("display current weather function");
-console.log(currentWeatherInfo);
-
 $("#current-conditions-city").text(cityStateName);
 $("#current-date").text(weatherDate);
 
@@ -109,30 +106,49 @@ $("#uv").text("UV Index: " + currentWeatherInfo["uv"]);
 
 // ICONS - do later 
 //$("#current-icon").attr??? = currentWeatherInfo["icon"]
-
 }
 
 
 
-//FUNCTION to get 5-day forecast from city name in API endpoint
+//FUNCTION to get 5-day forecast from city name in API endpoint, store in array objects
 function get5DayForecast(){
 
-   let string5DayURL =  "https://api.openweathermap.org/data/2.5/forecast?q=" + cityStateName + "&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
+   let string5DayURL =  "https://api.openweathermap.org/data/2.5/forecast?q=" + cityStateName + "&units=imperial&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
 
-       $.ajax({  //get data for 5 day weather forecast
+    $.ajax({  //get data for 5 day weather forecast
         url: string5DayURL,
         method: 'GET',
     }).then(function (response) {
-        console.log("5day forecast");
         console.log(response);
 
-        //hand weather data arguments to display function 
+        //loop through 5 days and build a forecast object for each day
+        for (i=0; i<40; i+=8){ 
+            //the response data increments every 3 hours, so we set the step to 8, so that each loop will be 24 hours
+
+            //get date & time from Unix time using moment.js
+            let forecastDate = moment(response.list[i].dt, "X").format("MMM Do YY");
+
+            let futureForecastObj = {
+                ["city"]: cityStateName,
+                ["date"]: forecastDate,
+                ["icon"]: response.list[i].weather[0].icon,
+                ["temp"]: response.list[i].main.temp,
+                ["humidity"]: response.list[i].main.humidity,
+                ["wind"]: response.list[i].wind.speed,
+            }
+
+            fiveDayInfo.push(futureForecastObj) //push each day's object to array 
+        }
+        displayFiveDay();
     });
-   
 }
 
 //FUNCTION to display 5-day forecast 
-//make display visible .css
+function displayFiveDay(){
+    console.log("5day forecast");
+    console.log(fiveDayInfo);
+
+}
 //for loop through response object for each day w/ response[i]
 
 

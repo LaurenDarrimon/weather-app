@@ -52,38 +52,33 @@ function displayCityButtons() {
     newCityButton.addClass("btn btn-primary w-100 my-2 city-button")   //set button classes for bootstrap
 
     newCityButton.text(cityStateName);    //fill button element
-    newCityButton.addClass("new-city-button")
+    newCityButton.addClass("new-city-button");
+    newCityButton.attr("data-lat", currentLat); //hide Lat & lon away in data attributes so we can display weather again
+    newCityButton.attr("data-lon", currentLon);
 
     $cityDisplayArea.append(newCityButton);    //append to city display
 }
 
-//FUNCTION to initiate getting weather info for the city on the button that was clicked 
+//FUNCTION change weather city
 function changeWeatherCity(event){
 
-    cityStateName = event.target.innerText
+    event.preventDefault();
 
-    //concatenated URL string for API call
-    let stringCityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityStateName + "&limit=5&appid=4a13086fc80aa69cd7cfdea0eb325b6a"
-    
-    //get city name from geocoding api
-    $.ajax({
-        url: stringCityURL,
-        method: 'GET',
-    }).then(function (response) {
-        currentLat = response[0].lat
-        currentLon = response[0].lon
-    });
+    console.log("CLICK");
+    console.log(event);
+
+    cityStateName = event.target.innerText
+    currentLat = event.target.attributes[1].nodeValue  //grab lat & lon from data attributes on button 
+    currentLon = event.target.attributes[2].nodeValue
 
     getCurrentConditions(); //call function for current conditions
     get5DayForecast(); // fxn for 5-day forecast
-
 }
 
 
 //FUNCTION to get current conditions from city name in API endpoint
 function getCurrentConditions(){
 
-    currentWeatherInfo = {}; //empty out past city weather conditions
     $("#current-date").empty(); //clear out the old forecast
     $("#temp").empty();
     $("#humidity").empty();

@@ -1,6 +1,7 @@
 let $searchButton = $("#search-button"); //DOM variables for city search panel
 let $cityDisplayArea = $("#city-display")
 
+
 let cityStateName;  //declare variables needed globally 
 let currentLat; 
 let currentLon; 
@@ -30,8 +31,6 @@ function citySearch(event){
 }
 
 function getCityName(response) { // get the city name from the data response
-    console.log("add city to list");
-    console.log(response);
 
     cityStateName = response[0].name + ", " + response[0].state
     currentLat = response[0].lat
@@ -55,13 +54,8 @@ function displayCityButtons() {
 
 //FUNCTION to initiate getting weather info for the city on the button that was clicked 
 function changeWeatherCity(event){
-    
-    console.log("CLICK");
-    console.log(event);
 
     cityStateName = event.target.innerText
-
-    console.log(cityStateName);
 
     getCurrentConditions();
     get5DayForecast();
@@ -87,10 +81,9 @@ function getCurrentConditions(){
         currentWeatherInfo["humidity"] = response.current.humidity
         currentWeatherInfo["wind"] = response.current.wind_speed;
         currentWeatherInfo["uv"] = response.current.uvi;
-;
 
-        //call weather display function 
-        displayCurrentWeather()
+        //call weather display functions 
+        displayCurrentWeather();
     });
 }
 
@@ -113,6 +106,8 @@ function displayCurrentWeather(){
 
 //FUNCTION to get 5-day forecast from city name in API endpoint, store in array objects
 function get5DayForecast(){
+
+    fiveDayInfo = []; //empty out past array 
 
    let string5DayURL =  "https://api.openweathermap.org/data/2.5/forecast?q=" + cityStateName + "&units=imperial&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
 
@@ -137,7 +132,6 @@ function get5DayForecast(){
                 ["humidity"]: response.list[i].main.humidity,
                 ["wind"]: response.list[i].wind.speed,
             }
-
             fiveDayInfo.push(futureForecastObj) //push each day's object to array 
         }
         displayFiveDay();
@@ -149,7 +143,43 @@ function displayFiveDay(){
     console.log("5day forecast");
     console.log(fiveDayInfo);
 
+    //clear out the old forecast
+    $("#five-day-forecast").empty();
+
+
     //loop through five day array and append div for eeach day
+    for (i=0; i < fiveDayInfo.length; i++){
+
+        let dayForecastBlock = $("<div>"); //create parent div for each day in 5-day forecast
+
+        //CREATE elements
+        let forecastDateArea = $("<h3>");  //create h3s for date & icon
+        let iconArea = $("<img>");
+
+        let tempArea = $("<p>");
+        let humidityArea = $("<p>");
+        let windArea = $("<p>");
+
+        //FILL with data from 5 day info array 
+        forecastDateArea.text(fiveDayInfo[i].date);
+
+        let iconPath = "http://openweathermap.org/img/wn/" + fiveDayInfo[i].icon + ".png";
+        iconArea.attr("src", iconPath);
+
+        tempArea.text("Temperature: " + fiveDayInfo[i].temp + "\xB0 F");
+        humidityArea.text("Humidity: " + fiveDayInfo[i].humidity + "%");
+        windArea.text("Wind Speed: " + fiveDayInfo[i].wind + "mph");
+
+        //APPEND to parent div
+        $("#five-day-forecast").append(dayForecastBlock);
+        dayForecastBlock.append(forecastDateArea);
+        dayForecastBlock.append(iconArea);
+        dayForecastBlock.append(tempArea);
+        dayForecastBlock.append(humidityArea);
+        dayForecastBlock.append(windArea);
+
+        dayForecastBlock.addClass("col-12 col-md2");//add bootstrap classes 
+    }
 
 }
 

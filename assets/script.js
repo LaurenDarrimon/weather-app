@@ -10,7 +10,11 @@ let forecastDate;
 
 let currentWeatherInfo = {}; //empty object we will fill with key value pairs of weather data
 let fiveDayInfo = new Array(); //new empty array to fill with objects for the five day forecast data
-let cities = []; //empty array that we'll fill with all the cities selected
+
+
+let cities = new Array(); //empty array that we'll fill with all the cities selected
+
+
 
 function citySearch(event){
     event.preventDefault(); //prevent page refresh
@@ -48,6 +52,7 @@ function displayCityButtons() {
     newCityButton.addClass("btn btn-primary w-100 my-2 city-button")   //set button classes for bootstrap
 
     newCityButton.text(cityStateName);    //fill button element
+    newCityButton.addClass("new-city-button")
 
     $cityDisplayArea.append(newCityButton);    //append to city display
 }
@@ -57,13 +62,33 @@ function changeWeatherCity(event){
 
     cityStateName = event.target.innerText
 
-    getCurrentConditions();
-    get5DayForecast();
+    //concatenated URL string for API call
+    let stringCityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityStateName + "&limit=5&appid=4a13086fc80aa69cd7cfdea0eb325b6a"
+    
+    //get city name from geocoding api
+    $.ajax({
+        url: stringCityURL,
+        method: 'GET',
+    }).then(function (response) {
+        currentLat = response[0].lat
+        currentLon = response[0].lon
+    });
+
+    getCurrentConditions(); //call function for current conditions
+    get5DayForecast(); // fxn for 5-day forecast
+
 }
 
 
 //FUNCTION to get current conditions from city name in API endpoint
 function getCurrentConditions(){
+
+    currentWeatherInfo = {}; //empty out past city weather conditions
+    $("#current-date").empty(); //clear out the old forecast
+    $("#temp").empty();
+    $("#humidity").empty();
+    $("#wind").empty();
+    $("#uv").empty();
 
    let currentWeatherURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + currentLat + "&lon=" + currentLon + "&units=imperial&exclude=minutely,hourly,daily,alerts&appid=4a13086fc80aa69cd7cfdea0eb325b6a";
 
@@ -103,7 +128,6 @@ function displayCurrentWeather(){
 }
 
 
-
 //FUNCTION to get 5-day forecast from city name in API endpoint, store in array objects
 function get5DayForecast(){
 
@@ -115,7 +139,6 @@ function get5DayForecast(){
         url: string5DayURL,
         method: 'GET',
     }).then(function (response) {
-        console.log(response);
 
         //loop through 5 days and build a forecast object for each day
         for (i=0; i<40; i+=8){ 
@@ -140,12 +163,8 @@ function get5DayForecast(){
 
 //FUNCTION to display 5-day forecast 
 function displayFiveDay(){
-    console.log("5day forecast");
-    console.log(fiveDayInfo);
 
-    //clear out the old forecast
-    $("#five-day-forecast").empty();
-
+    $("#five-day-forecast").empty(); //clear out the old forecast
 
     //loop through five day array and append div for eeach day
     for (i=0; i < fiveDayInfo.length; i++){

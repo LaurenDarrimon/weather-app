@@ -87,8 +87,9 @@ function getCurrentConditions(){
         currentWeatherInfo["humidity"] = response.current.humidity
         currentWeatherInfo["wind"] = response.current.wind_speed;
         currentWeatherInfo["uv"] = response.current.uvi;
+;
 
-        //hand weather data object as argument to display function 
+        //call weather display function 
         displayCurrentWeather()
     });
 }
@@ -96,16 +97,16 @@ function getCurrentConditions(){
 //FUNCTION to display current conditions
 function displayCurrentWeather(){
 
-$("#current-conditions-city").text(cityStateName);
-$("#current-date").text(weatherDate);
+    $("#current-conditions-city").text(cityStateName);
+    $("#current-date").text(weatherDate);
 
-$("#temp").text("Temperature: " + currentWeatherInfo["temp"] + "\xB0 F");
-$("#humidity").text("Humidity: " + currentWeatherInfo["humidity"] + "%");
-$("#wind").text("Wind Speed: " + currentWeatherInfo["wind"]) + "mph";
-$("#uv").text("UV Index: " + currentWeatherInfo["uv"]);
+    $("#temp").text("Temperature: " + currentWeatherInfo["temp"] + "\xB0 F");
+    $("#humidity").text("Humidity: " + currentWeatherInfo["humidity"] + "%");
+    $("#wind").text("Wind Speed: " + currentWeatherInfo["wind"]) + "mph";
+    $("#uv").text("UV Index: " + currentWeatherInfo["uv"]);
 
-// ICONS - do later 
-//$("#current-icon").attr??? = currentWeatherInfo["icon"]
+    let iconPath = "http://openweathermap.org/img/wn/" + currentWeatherInfo["icon"] + ".png";
+    $("#current-icon").attr("src", iconPath);
 }
 
 
@@ -148,9 +149,9 @@ function displayFiveDay(){
     console.log("5day forecast");
     console.log(fiveDayInfo);
 
-}
-//for loop through response object for each day w/ response[i]
+    //loop through five day array and append div for eeach day
 
+}
 
 
 //declare FUNCTION to store cities array in local storage

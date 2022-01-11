@@ -1,6 +1,6 @@
 let $searchButton = $("#search-button"); //DOM variables for city search panel
 let $cityDisplayArea = $("#city-display")
-
+let $cityFormArea = $("#city-form-input")
 
 let cityStateName;  //declare variables needed globally 
 let currentLat; 
@@ -10,28 +10,31 @@ let forecastDate;
 
 let currentWeatherInfo = {}; //empty object we will fill with key value pairs of weather data
 let fiveDayInfo = new Array(); //new empty array to fill with objects for the five day forecast data
-
-
 let cities = new Array(); //empty array that we'll fill with all the cities selected
-
-
 
 function citySearch(event){
     event.preventDefault(); //prevent page refresh
 
     let cityNameInput = event.target.previousElementSibling.value; //store the input text value in a variable. 
 
-    //declare variable for concatenated URL string for API call
-    let stringCityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityNameInput + "&limit=5&appid=4a13086fc80aa69cd7cfdea0eb325b6a"
-    
-    //get city name from geocoding api
-    $.ajax({
-        url: stringCityURL,
-        method: 'GET',
-    }).then(function (response) {
+    if (cityNameInput){
 
-        getCityName(response) //pass city data object to the function to get the name of the city and the state
-    });
+        //declare variable for concatenated URL string for API call
+        let stringCityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityNameInput + "&limit=5&appid=4a13086fc80aa69cd7cfdea0eb325b6a"
+        
+        //get city name from geocoding api
+        $.ajax({
+            url: stringCityURL,
+            method: 'GET',
+        }).then(function (response) {
+
+            getCityName(response) //pass city data object to the function to get the name of the city and the state
+        });
+
+        $cityFormArea.attr("placeholder", "");
+    } else{
+        return; //if there's nothing in the string, stop doing work
+    }
 }
 
 function getCityName(response) { // get the city name from the data response & store in cities array
@@ -41,16 +44,13 @@ function getCityName(response) { // get the city name from the data response & s
     currentLon = response[0].lon
 
     //anytime we get a city name, add an object with info about the city to the cities array
-
     let cityInfoObject = {
-        city : cityStateName,
-        lat: currentLat,
-        lon: currentLon,
+        city : cityStateName, //save name
+        lat: currentLat, //save latitude 
+        lon: currentLon, //save longitude
     }
 
-    console.log(cityInfoObject);
-
-    cities.push(cityInfoObject);
+    cities.push(cityInfoObject); //push city object to array of all cities 
     console.log(cities);
 
     localStorage.setItem("SelectedCities", JSON.stringify(cities)); //store cities array in local storage
@@ -59,6 +59,7 @@ function getCityName(response) { // get the city name from the data response & s
     getCurrentConditions(); //call function for current conditions
     get5DayForecast(); // fxn for 5-day forecast
 }
+
 
 function displayCityButtons() {
 
@@ -77,19 +78,17 @@ function displayCityButtons() {
 //FUNCTION change weather city
 function changeWeatherCity(event){
 
-    event.preventDefault();
+    event.preventDefault(); //stop page refresh
 
-    console.log("CLICK");
     console.log(event);
 
-    cityStateName = event.target.innerText
+    cityStateName = event.target.innerText //get name from text of button
     currentLat = event.target.attributes[1].nodeValue  //grab lat & lon from data attributes on button 
     currentLon = event.target.attributes[2].nodeValue
 
     getCurrentConditions(); //call function for current conditions
     get5DayForecast(); // fxn for 5-day forecast
 }
-
 
 //FUNCTION to get current conditions from city name in API endpoint
 function getCurrentConditions(){
@@ -107,9 +106,9 @@ function getCurrentConditions(){
         method: 'GET',
     }).then(function (response) {
 
-        weatherDate = moment(response.current.dt, "X").format("MMM Do");
+        weatherDate = moment(response.current.dt, "X").format("MMM Do"); //use moment to convert UNIX time to date 
 
-        currentWeatherInfo["city"] = cityStateName;   //fill up current weather info object with required data 
+        currentWeatherInfo["city"] = cityStateName;   //fill up current weather info object with required data from response objecr
         currentWeatherInfo["date"] = weatherDate;
         currentWeatherInfo["icon"] = response.current.weather[0].icon;
         currentWeatherInfo["temp"] = response.current.temp
@@ -125,16 +124,34 @@ function getCurrentConditions(){
 //FUNCTION to display current conditions
 function displayCurrentWeather(){
 
-    $("#current-conditions-city").text(cityStateName);
-    $("#current-date").text(weatherDate);
+    $("#current-conditions-city").text(cityStateName); //set the city name
+    $("#current-date").text(weatherDate); //set date 
 
-    $("#temp").text("Temperature: " + currentWeatherInfo["temp"] + "\xB0 F");
+    $("#temp").text("Temperature: " + currentWeatherInfo["temp"] + "\xB0 F"); //set weather infoe
     $("#humidity").text("Humidity: " + currentWeatherInfo["humidity"] + "%");
     $("#wind").text("Wind Speed: " + currentWeatherInfo["wind"]) + "mph";
     $("#uv").text("UV Index: " + currentWeatherInfo["uv"]);
 
-    let iconPath = "http://openweathermap.org/img/wn/" + currentWeatherInfo["icon"] + ".png";
-    $("#current-icon").attr("src", iconPath);
+    let iconPath = "http://openweathermap.org/img/wn/" + currentWeatherInfo["icon"] + ".png"; //concatenate URL for icon
+    $("#current-icon").attr("src", iconPath);  //set source attribute for icon
+
+    UVdisplay();
+}
+
+function UVdisplay(){
+
+    let UVI = currentWeatherInfo["uv"]; //declare quick UVI variable 
+
+    if (UVI <= 2){ 
+        $("#uv").css("background-color", "green"); //change background color based on danger level of UVI 
+    } else if (UVI <=5 ){
+        $("#uv").css("background-color", "yellow");
+    } else if (UVI <=7 ){
+        $("#uv").css("background-color", "orange");
+    } else {
+        $("#uv").css("background-color", "red");
+    }
+
 }
 
 
@@ -157,7 +174,7 @@ function get5DayForecast(){
             //get date & time from Unix time using moment.js
             let forecastDate = moment(response.list[i].dt, "X").format("MMM Do");
 
-            let futureForecastObj = {
+            let futureForecastObj = { //fill the future forecast object with data from response object 
                 ["city"]: cityStateName,
                 ["date"]: forecastDate,
                 ["icon"]: response.list[i].weather[0].icon,
@@ -165,7 +182,7 @@ function get5DayForecast(){
                 ["humidity"]: response.list[i].main.humidity,
                 ["wind"]: response.list[i].wind.speed,
             }
-            fiveDayInfo.push(futureForecastObj) //push each day's object to array 
+            fiveDayInfo.push(futureForecastObj) //push each day's forecast object into array of all the objects 
         }
         displayFiveDay();
     });
@@ -189,7 +206,7 @@ function displayFiveDay(){
         let humidityArea = $("<p>");
         let windArea = $("<p>");
 
-        //FILL with data from 5 day info array 
+        //FILL elements with data from 5 day info array 
         forecastDateArea.text(fiveDayInfo[i].date);
 
         let iconPath = "http://openweathermap.org/img/wn/" + fiveDayInfo[i].icon + ".png";
@@ -199,7 +216,7 @@ function displayFiveDay(){
         humidityArea.text("Humidity: " + fiveDayInfo[i].humidity + "%");
         windArea.text("Wind Speed: " + fiveDayInfo[i].wind + "mph");
 
-        //APPEND to parent div
+        //APPEND all elements to parent div
         $("#five-day-forecast").append(dayForecastBlock);
         dayForecastBlock.append(forecastDateArea);
         dayForecastBlock.append(iconArea);
@@ -207,29 +224,28 @@ function displayFiveDay(){
         dayForecastBlock.append(humidityArea);
         dayForecastBlock.append(windArea);
 
-        dayForecastBlock.addClass("col-12 col-md-2 m-2");//add bootstrap classes 
+        dayForecastBlock.addClass("col-12 col-md-2 m-2");//add bootstrap and styling classes 
         dayForecastBlock.css("background-color", "#a9d0de");
     }
-
-}
+};
 
 //declare FUNCTION to get cities array from local storage and feed that array to the display city buttons function
 function getPastCities(){
     //if there is something in local storage
     if(localStorage.getItem("SelectedCities")){
-        cities = JSON.parse(localStorage.getItem("SelectedCities"));
+        cities = JSON.parse(localStorage.getItem("SelectedCities")); //get the string from local storage and parse it into array
 
-        console.log("past cities array")
         console.log(cities)
 
-        for (i=0; i<cities.length; i++){
-            cityStateName = cities[i].city;
+        //loop through all the cities,  
+        for (i=0; i<cities.length; i++){  
+            cityStateName = cities[i].city;  //for each city store the name, lat & lon,
             currentLat = cities[i].lat;
             currentLon = cities[i].lon;
-            displayCityButtons();
+            displayCityButtons(); //then display a button for each one
         }
     }
-} 
+}; 
 
 //when the city serch button clicks, then run a city search function. 
 $searchButton.on("click", citySearch);

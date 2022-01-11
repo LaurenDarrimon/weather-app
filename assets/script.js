@@ -34,11 +34,26 @@ function citySearch(event){
     });
 }
 
-function getCityName(response) { // get the city name from the data response
+function getCityName(response) { // get the city name from the data response & store in cities array
 
     cityStateName = response[0].name + ", " + response[0].state
     currentLat = response[0].lat
     currentLon = response[0].lon
+
+    //anytime we get a city name, add an object with info about the city to the cities array
+
+    let cityInfoObject = {
+        city : cityStateName,
+        lat: currentLat,
+        lon: currentLon,
+    }
+
+    console.log(cityInfoObject);
+
+    cities.push(cityInfoObject);
+    console.log(cities);
+
+    localStorage.setItem("SelectedCities", JSON.stringify(cities)); //store cities array in local storage
 
     displayCityButtons(); //call display buttons
     getCurrentConditions(); //call function for current conditions
@@ -92,7 +107,7 @@ function getCurrentConditions(){
         method: 'GET',
     }).then(function (response) {
 
-        weatherDate = moment(response.current.dt, "X").format("MMM Do YY");
+        weatherDate = moment(response.current.dt, "X").format("MMM Do");
 
         currentWeatherInfo["city"] = cityStateName;   //fill up current weather info object with required data 
         currentWeatherInfo["date"] = weatherDate;
@@ -140,7 +155,7 @@ function get5DayForecast(){
             //the response data increments every 3 hours, so we set the step to 8, so that each loop will be 24 hours
 
             //get date & time from Unix time using moment.js
-            let forecastDate = moment(response.list[i].dt, "X").format("MMM Do YY");
+            let forecastDate = moment(response.list[i].dt, "X").format("MMM Do");
 
             let futureForecastObj = {
                 ["city"]: cityStateName,
@@ -192,21 +207,36 @@ function displayFiveDay(){
         dayForecastBlock.append(humidityArea);
         dayForecastBlock.append(windArea);
 
-        dayForecastBlock.addClass("col-12 col-md2");//add bootstrap classes 
+        dayForecastBlock.addClass("col-12 col-md-2 m-2");//add bootstrap classes 
+        dayForecastBlock.css("background-color", "#a9d0de");
     }
 
 }
 
-
-//declare FUNCTION to store cities array in local storage
-
 //declare FUNCTION to get cities array from local storage and feed that array to the display city buttons function
+function getPastCities(){
+    //if there is something in local storage
+    if(localStorage.getItem("SelectedCities")){
+        cities = JSON.parse(localStorage.getItem("SelectedCities"));
+
+        console.log("past cities array")
+        console.log(cities)
+
+        for (i=0; i<cities.length; i++){
+            cityStateName = cities[i].city;
+            currentLat = cities[i].lat;
+            currentLon = cities[i].lon;
+            displayCityButtons();
+        }
+    }
+} 
 
 //when the city serch button clicks, then run a city search function. 
 $searchButton.on("click", citySearch);
 
-//add event listener to anything with class city button 
+//add event listener to anything with class city-button 
 $(document).on("click", ".city-button", changeWeatherCity);
 
 //call function to check local storage for the cities array
 
+getPastCities();

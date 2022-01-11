@@ -20,7 +20,7 @@ function citySearch(event){
     if (cityNameInput){
 
         //declare variable for concatenated URL string for API call
-        let stringCityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityNameInput + "&limit=5&appid=4a13086fc80aa69cd7cfdea0eb325b6a"
+        let stringCityURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityNameInput + "&limit=5&appid=4a13086fc80aa69cd7cfdea0eb325b6a"
         
         //get city name from geocoding api
         $.ajax({
@@ -132,7 +132,7 @@ function displayCurrentWeather(){
     $("#wind").text("Wind Speed: " + currentWeatherInfo["wind"]) + "mph";
     $("#uv").text("UV Index: " + currentWeatherInfo["uv"]);
 
-    let iconPath = "http://openweathermap.org/img/wn/" + currentWeatherInfo["icon"] + ".png"; //concatenate URL for icon
+    let iconPath = "https://openweathermap.org/img/wn/" + currentWeatherInfo["icon"] + ".png"; //concatenate URL for icon
     $("#current-icon").attr("src", iconPath);  //set source attribute for icon
 
     UVdisplay();

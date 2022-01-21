@@ -84,3 +84,6 @@ The JQuery javascript library was used to simplify DOM traversal, event listener
 - [Link to Portfolio Site](https://www.laurenlalita.com)
 - [Link to Github](https://github.com/LaurenDarrimon)
 - [Link to LinkedIn](https://www.linkedin.com/in/lauren-lalita-duker-9537b1201/)
+
+## License
+[MIT Open Source Software](/LICENSE.txt)

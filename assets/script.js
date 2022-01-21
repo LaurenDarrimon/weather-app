@@ -45,7 +45,7 @@ function getCityName(response) { // get the city name from the data response & s
 
     //anytime we get a city name, add an object with info about the city to the cities array
     let cityInfoObject = {
-        city : cityStateName, //save name
+        city: cityStateName, //save name
         lat: currentLat, //save latitude 
         lon: currentLon, //save longitude
     }
